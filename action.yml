@@ -38,6 +38,20 @@ inputs:
     description: File path to the package.json to read `packageManager` and `devEngines.runtime` configuration. This path must be relative to the repository root (GITHUB_WORKSPACE).
     required: false
     default: 'package.json'
+  install:
+    description: |
+      Whether to run `pnpm install` after pnpm and the runtime are set up.
+
+      When set to `true` (the default), the action runs `pnpm install` in the
+      workspace when a package.json is present. When the `runtime` input is
+      also set, `--no-runtime` is appended automatically so the installed
+      runtime isn't shadowed by a different version declared in
+      `devEngines.runtime`.
+
+      Set to `false` to skip the install step — useful for jobs that only
+      need pnpm itself (e.g. `pnpm audit`, lockfile-only regeneration).
+    required: false
+    default: 'true'
 outputs:
   dest:
     description: Expanded path of inputs#dest

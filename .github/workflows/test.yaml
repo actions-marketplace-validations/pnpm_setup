@@ -281,6 +281,44 @@ jobs:
           esac
         shell: bash
 
+  install-false:
+    # `install: false` skips the auto-install step even though a manifest is
+    # present.
+    name: 'install: false skips pnpm install'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up package.json with a dependency
+        run: |
+          rm -f pnpm-lock.yaml
+          cat > package.json <<'EOF'
+          {
+            "packageManager": "pnpm@11.1.0",
+            "dependencies": {
+              "is-odd": "3.0.1"
+            }
+          }
+          EOF
+        shell: bash
+
+      - uses: ./
+        with:
+          version: '11.1.0'
+          install: false
+
+      - name: 'Test: node_modules was not populated'
+        run: |
+          set -e
+          if [ -d node_modules/is-odd ]; then
+            echo "Expected install: false to skip pnpm install, but node_modules/is-odd exists"
+            exit 1
+          fi
+          # pnpm itself should still be on PATH.
+          which pnpm
+          pnpm --version
+        shell: bash
+
   no-runtime:
     # No runtime input, no devEngines.runtime. Action installs pnpm only and
     # leaves the runtime outputs empty. With no package.json, `pnpm install`

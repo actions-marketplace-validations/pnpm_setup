@@ -17,6 +17,7 @@ export interface Inputs {
   readonly cacheDependencyPath: string
   readonly packageJsonFile: string
   readonly runtime?: RuntimeInput
+  readonly install: boolean
 }
 
 const options: InputOptions = {
@@ -56,6 +57,7 @@ export const getInputs = (): Inputs => ({
   cacheDependencyPath: parseInputPath('cache-dependency-path'),
   packageJsonFile: parseInputPath('package-json-file'),
   runtime: parseRuntime(),
+  install: getBooleanInput('install'),
 })
 
 export default getInputs

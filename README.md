@@ -16,6 +16,7 @@ If your `package.json` declares `devEngines.runtime`, the action picks up the ru
 | `cache` | Cache the pnpm store directory. Default: `false`. |
 | `cache-dependency-path` | Path(s) to the pnpm lockfile, used to compute the cache key. Default: `pnpm-lock.yaml`. |
 | `package-json-file` | Path to `package.json` (relative to `GITHUB_WORKSPACE`). Default: `package.json`. |
+| `install` | Run `pnpm install` after setup. Default: `true`. Set to `false` for jobs that only need pnpm itself (e.g. `pnpm audit`, lockfile-only regeneration). |
 
 ## Outputs
 
@@ -90,12 +91,23 @@ jobs:
     cache: true
 ```
 
+### Skip `pnpm install`
+
+For jobs that only need pnpm itself — e.g. `pnpm audit`, lockfile-only regeneration — set `install: false`:
+
+```yaml
+- uses: pnpm/setup@v0
+  with:
+    install: false
+- run: pnpm audit
+```
+
 ## How it works
 
 1. The action installs `@pnpm/exe` (a Node.js-bundled standalone build of pnpm) into `dest`, then self-updates to the requested pnpm version.
 2. `PNPM_HOME` is exported and `$PNPM_HOME/bin` is added to `PATH`.
 3. The action runs `pnpm runtime set <name> <version> -g`, which downloads the requested runtime into `$PNPM_HOME/bin` — making `node`, `bun`, or `deno` available to later workflow steps.
-4. If a `package.json` exists in the workspace, the action runs `pnpm install`. When the `runtime` input is set, `--no-runtime` is appended so the just-installed runtime isn't shadowed by a different version declared in `devEngines.runtime`. This flag requires pnpm ≥ 11.1.0.
+4. If a `package.json` exists in the workspace, the action runs `pnpm install` (unless `install: false` is set). When the `runtime` input is set, `--no-runtime` is appended so the just-installed runtime isn't shadowed by a different version declared in `devEngines.runtime`. This flag requires pnpm ≥ 11.1.0.
 
 ## License
 
