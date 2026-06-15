@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/setup@v0
+      - uses: pnpm/setup@v1
       - run: node --version
       - run: pnpm test
 ```
@@ -65,7 +65,7 @@ jobs:
         node: [20, 22, 24]
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/setup@v0
+      - uses: pnpm/setup@v1
         with:
           runtime: node@${{ matrix.node }}
       - run: pnpm test
@@ -74,11 +74,11 @@ jobs:
 ### Install Bun or Deno
 
 ```yaml
-- uses: pnpm/setup@v0
+- uses: pnpm/setup@v1
   with:
     runtime: bun@latest
 
-- uses: pnpm/setup@v0
+- uses: pnpm/setup@v1
   with:
     runtime: deno@2
 ```
@@ -86,7 +86,7 @@ jobs:
 ### Cache the pnpm store
 
 ```yaml
-- uses: pnpm/setup@v0
+- uses: pnpm/setup@v1
   with:
     cache: true
 ```
@@ -96,7 +96,7 @@ jobs:
 For jobs that only need pnpm itself — e.g. `pnpm audit`, lockfile-only regeneration — set `install: false`:
 
 ```yaml
-- uses: pnpm/setup@v0
+- uses: pnpm/setup@v1
   with:
     install: false
 - run: pnpm audit
